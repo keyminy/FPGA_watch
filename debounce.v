@@ -38,8 +38,8 @@ module debounce(
         end
         else begin
             pls_1k1 <= pls_1k0;
-            // if(cnt < 50000-1) // for Board Implementation
-            if(cnt < 50-1) // for simulation Only
+            if(cnt < 50000-1) // for Board Implementation
+            // if(cnt < 50-1) // for simulation Only
                 cnt <= cnt + 1;
             else begin
                 cnt <= 0;
@@ -48,4 +48,5 @@ module debounce(
             end
         end
     end
+
 endmodule

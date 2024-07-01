@@ -7,7 +7,11 @@ module state_ctrl(
     output led15_disp,
     output led0_run,
     output led7,
-    output led8
+    output led8,
+    input [3:0] sw,
+    output [3:0] an,
+    output [6:0] seg,
+    output dp
 );
     wire rst;
     wire w_run_md_btn; // btnr
@@ -27,17 +31,8 @@ module state_ctrl(
     assign led7 = clr_on;
     assign led8 = clr_on;
 
-    /* My */
-    localparam S_STOP = 0;
-    localparam S_RUN = 1;
-
-    reg state;
-    // Step1. always block to update state
-    /* End My */
-
     always @(negedge rst or posedge clk) begin
         if(!rst) begin
-            state <= S_STOP;
             run_md_reg <= 0;
             disp_md_reg <= 0;
             clr_on <= 0;
@@ -101,5 +96,14 @@ module state_ctrl(
         .key(w_run_md_btn)
     );
     assign rst = ~btnl;
+
+    stop_watch_cnt u_stop_watch_cnt_0(
+        .clk(clk),
+        .rst(rst),
+        .sw(sw),
+        .an(an),
+        .seg(seg),
+        .dp(dp)
+    );
 
 endmodule
