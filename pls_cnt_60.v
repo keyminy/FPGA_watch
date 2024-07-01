@@ -13,7 +13,6 @@ always @(posedge rst,posedge clk) begin
         cl0 <=0; cl1 <= 0;
         pl0 <= 0; pl1 <= 0;
         plso <= 0;
-        plsi <= 0;
         qout <= 0;
     end
     else begin
@@ -24,11 +23,16 @@ always @(posedge rst,posedge clk) begin
             qout <= 0; plso <= 0;
         end else if(pl1 & ~pl0) begin
             //falling edge of Pulse signal
-            if(qout >= 59) begin
+            if(qout >= 60-1) begin
                 qout <= 0;
                 plso <= 0;
             end else begin
                 qout <= qout + 1;
+                if(qout < 30-1) begin
+                    plso <= 0;
+                end else begin
+                    plso <= 1;
+                end
             end
         end
     end
