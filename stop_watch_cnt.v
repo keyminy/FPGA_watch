@@ -1,59 +1,60 @@
 module stop_watch_cnt(
     input clk,
     input rst,
-    input [3:0] sw,
-    output [3:0] an,
-    output [6:0] seg,
-    output dp
+    input clr, // Clear the Counter at rising edge of CLR Input
+    input plsi, // 100Hz Pulse Input, Count up at falling edge of PLSI.
+    output [6:0] o_usec,
+    output [5:0] o_sec,
+    output [5:0] o_min
 );
-    reg pls_1kHz;
-    wire w_clk100Hz;
-    wire [7:0] seg_d;
+    wire w_pls_sec;
+    wire w_pls_min;
+    wire w_pls_hour;
     
-    wire w_usec;
-    wire w_sec;
-
-    reg [15:0] cnt_1kHz; // 50,000 divide
-
-    always @(negedge rst or posedge clk) begin
-        if(rst == 0) begin
-            cnt_1kHz <= 0;
-            pls_1kHz <= 0;
-        end
-        else begin
-            if(cnt_1kHz < 50000-1)
-                cnt_1kHz <= cnt_1kHz + 1;
-            else begin
-                cnt_1kHz <= 0;
-                pls_1kHz <= ~pls_1kHz;
-            end
-        end
-    end
-
-    assign an = sw;
-    assign dp = ~seg_d[7];
-    assign seg = ~seg_d[6:0];
-    
-    pls_cnt_10 u_pls_cnt_10(
+    // Under sec, counter : 00 ~ 99
+    pls_cnt_100 u_usec_cnt(
         .rst(rst),
         .clk(clk),
-        .plsi(pls_1kHz),
-        .plso(w_clk100Hz)
+        .clr(clr),
+        .plsi(plsi),
+        .plso(w_pls_sec),
+        .qout(o_usec)
     );
 
-    pls_cnt_100 u_pls_cnt_100_0(
-        .clk(clk),
-        .plsi(w_clk100Hz),
+    // Sec, counter : 00 ~ 59
+    pls_cnt_60 u_sec_cnt(
         .rst(rst),
-        .clr(btnu),
-        .plso(),
-        .qout(w_usec)
+        .clk(clk),
+        .clr(clr),
+        .plsi(w_pls_sec),
+        .plso(w_pls_min),
+        .qout(o_sec)
     );
 
-
-    watch_hex2seg u_watch_hex2seg_0(
-        .din(temp_cnt),
-        .seg_d(seg_d)
+    // Min, counter : 00 ~ 59
+    pls_cnt_60 u_min_cnt(
+        .rst(rst),
+        .clk(clk),
+        .clr(clr),
+        .plsi(w_pls_min),
+        .plso(w_pls_hour),
+        .qout(o_min)
     );
+
+    // pls_cnt_10 u_pls_cnt_10(
+    //     .rst(rst),
+    //     .clk(clk),
+    //     .plsi(pls_1kHz),
+    //     .plso(w_clk100Hz)
+    // );
+
+
+    
+
+
+    // watch_hex2seg u_watch_hex2seg_0(
+    //     .din(w_usec),
+    //     .seg_d(seg_d)
+    // );
 
 endmodule

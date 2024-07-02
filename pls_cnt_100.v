@@ -23,6 +23,7 @@ begin
             if (cl0 & ~cl1)         // Rising Edge of CLR
                 begin
                     qout <= 0;  plso <= 0;
+                    pl0 <= 0; pl1 <= 0; // Added this 07021047
                 end
             else if (pl1 & ~pl0)    // Falling Edge of PLSI
                 begin

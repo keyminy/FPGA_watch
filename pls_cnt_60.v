@@ -1,6 +1,8 @@
 module pls_cnt_60(
-    input rst,clk,
-    input clr,plsi,
+    input rst,
+    input clk,
+    input clr,
+    input plsi,
     output reg plso,
     output reg [5:0] qout
 );
@@ -8,7 +10,7 @@ module pls_cnt_60(
 reg cl0,cl1;
 reg pl0,pl1;
 
-always @(posedge rst,posedge clk) begin
+always @(posedge rst or posedge clk) begin
     if(!rst) begin
         cl0 <=0; cl1 <= 0;
         pl0 <= 0; pl1 <= 0;
@@ -21,6 +23,7 @@ always @(posedge rst,posedge clk) begin
         if(cl0 & ~cl1) begin
             // rising edge of clear signal
             qout <= 0; plso <= 0;
+            pl0 <= 0; pl1 <= 0; // Added this 07021047
         end else if(pl1 & ~pl0) begin
             //falling edge of Pulse signal
             if(qout >= 60-1) begin
