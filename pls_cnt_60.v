@@ -10,7 +10,7 @@ module pls_cnt_60(
 reg cl0,cl1;
 reg pl0,pl1;
 
-always @(posedge rst or posedge clk) begin
+always @(negedge rst or posedge clk) begin
     if(!rst) begin
         cl0 <=0; cl1 <= 0;
         pl0 <= 0; pl1 <= 0;

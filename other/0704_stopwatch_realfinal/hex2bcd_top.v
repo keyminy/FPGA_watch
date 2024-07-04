@@ -7,9 +7,9 @@ module hex2bcd_top(
     output reg [3:0] bcd_a,bcd_b,bcd_c,bcd_d
     );
 
-reg st0,st1; // rising edge 검출 위함
+reg st0,st1;
 reg [4:0] cnt;
-reg convert; // submodule에 start신호 내보내기 위함
+reg convert;
 reg [6:0] din;
 
 wire dones;
@@ -35,7 +35,7 @@ hex2bcd u_hex2bcd
 .start  (convert),
 .din    (din    ),
 .done   (dones  ),
-.bcd_h  (bcd_h   ), // 하위모듈로부터, 4bit씩 bcd신호 받음
+.bcd_h  (bcd_h   ),
 .bcd_l  (bcd_l   )
 );
 
@@ -43,11 +43,12 @@ always@(negedge rst, posedge clk)
 begin
     if (rst == 0)
         done <= 0;    
-    else begin
-        done <= 0;    
-        if ((cnt > 16) & (cnt < 31))
-            done <= 1;
-    end
+    else 
+        begin
+            done <= 0;    
+            if ((cnt > 16) & (cnt < 31))
+                done <= 1;
+        end
 end
 
 always@(negedge rst, posedge clk)
@@ -64,7 +65,7 @@ begin
                 begin
                     if (cnt[2:0] < 4)   convert <= 1;
                     // DIN Select
-                    if (cnt < 7)   din <= h_val; // 0~6사이 작업
+                    if (cnt < 7)   din <= h_val;
                 end
         end
 end
