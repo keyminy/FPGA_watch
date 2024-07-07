@@ -51,6 +51,7 @@ begin
                 begin
                     seg <= ~seg_d;
                     case(sel)
+                    // dp도 0일때 led on(즉 3번째자리 dp는 항상on)
                     2'd0    : begin     an <= 4'b0111;  dp <= 1;        end
                     2'd1    : begin     an <= 4'b1011;  dp <= 0;        end
                     2'd2    : begin     an <= 4'b1101;  dp <= 1;        end
